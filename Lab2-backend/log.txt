@@ -1,0 +1,167 @@
+Tick 0
+Bus 1: Decoding Task 1
+Bus 2: Task 2 sent to cache queue
+Bus 2: Decoding Task 3
+Bus 1: Decoding Task 1
+Bus 2: Decoding Task 3
+Started getting cache Task 2
+Tick 1
+Bus 1: Task 1 finished Decoding
+Bus 1: Task 1 delayed (bus busy)
+Bus 2: Task 3 finished Decoding
+Bus 2: Task 3 delayed (bus busy)
+Still getting cache Task 2
+Tick 2
+Bus 1: Task 1 still delayed (bus busy)
+Bus 2: Task 3 still delayed (bus busy)
+Still getting cache Task 2
+Tick 3
+Bus 1: Task 1 still delayed (bus busy)
+Bus 2: Task 3 still delayed (bus busy)
+Still getting cache Task 2
+Tick 4
+Bus 1: Task 1 still delayed (bus busy)
+Bus 2: Task 3 still delayed (bus busy)
+Still getting cache Task 2
+Tick 5
+Bus 1: Task 1 still delayed (bus busy)
+Bus 2: Task 3 still delayed (bus busy)
+finished Caching Task2 → queued with priority on bus 2
+Tick 6
+Bus 1: Started executing Task 1
+Bus 2: Task 3 still delayed (bus busy)
+Tick 7
+Bus 1: Done executing Task 1
+Bus 2: Task 3 still delayed (bus busy)
+Tick 8
+Bus 1: Decoding Task 4
+Bus 1: Decoding Task 4
+Bus 2: Started executing Task 3
+Tick 9
+Bus 1: Task 4 finished Decoding
+Bus 1: Started executing Task 4
+Bus 2: Done executing Task 3
+Tick 10
+Bus 2: Decoding Task 2
+Bus 1: Executing Task 4
+Bus 2: Decoding Task 2
+Tick 11
+Bus 1: Done executing Task 4
+Bus 2: Task 2 finished Decoding
+Bus 2: Started executing Task 2
+Tick 12
+Bus 1: Decoding Task 5
+Bus 1: Decoding Task 5
+Bus 2: Executing Task 2
+Tick 13
+Bus 1: Task 5 finished Decoding
+Bus 1: Started executing Task 5
+Bus 2: Done executing Task 2
+Tick 14
+Bus 2: Task 6 sent to cache queue
+Bus 2: Task 7 sent to cache queue
+Bus 2: Decoding Task 8
+Bus 1: Done executing Task 5
+Bus 2: Decoding Task 8
+Tick 15
+Bus 1: Decoding Task 9
+Bus 1: Decoding Task 9
+Bus 2: Task 8 finished Decoding
+Bus 2: Started executing Task 8
+Started getting cache Task 6
+Tick 16
+Bus 1: Task 9 finished Decoding
+Bus 1: Task 9 delayed (bus busy)
+Bus 2: Done executing Task 8
+Still getting cache Task 6
+Tick 17
+Bus 2: Task 10 sent to cache queue
+Bus 2: Decoding Task 11
+Bus 1: Task 9 still delayed (bus busy)
+Bus 2: Decoding Task 11
+Still getting cache Task 6
+Tick 18
+Bus 1: Task 9 still delayed (bus busy)
+Bus 2: Task 11 finished Decoding
+Bus 2: Task 11 delayed (bus busy)
+Still getting cache Task 6
+Tick 19
+Bus 1: Task 9 still delayed (bus busy)
+Bus 2: Task 11 still delayed (bus busy)
+Still getting cache Task 6
+Tick 20
+Bus 1: Task 9 still delayed (bus busy)
+Bus 2: Task 11 still delayed (bus busy)
+finished Caching Task6 → queued with priority on bus 2
+Tick 21
+Bus 1: Started executing Task 9
+Bus 2: Task 11 still delayed (bus busy)
+Tick 22
+Bus 1: Done executing Task 9
+Bus 2: Task 11 still delayed (bus busy)
+Tick 23
+Bus 1: Decoding Task 12
+Bus 1: Decoding Task 12
+Bus 2: Started executing Task 11
+Tick 24
+Bus 1: Task 12 finished Decoding
+Bus 1: Started executing Task 12
+Bus 2: Started executing Task 11
+Tick 25
+Bus 1: Done executing Task 12
+Bus 2: Started executing Task 11
+Tick 26
+Bus 2: Done executing Task 11
+Tick 27
+Bus 2: Decoding Task 6
+Bus 2: Decoding Task 6
+Started getting cache Task 7
+Tick 28
+Bus 2: Task 6 finished Decoding
+Bus 2: Task 6 delayed (bus busy)
+Still getting cache Task 7
+Tick 29
+Bus 2: Task 6 still delayed (bus busy)
+Still getting cache Task 7
+Tick 30
+Bus 2: Task 6 still delayed (bus busy)
+Still getting cache Task 7
+Tick 31
+Bus 2: Task 6 still delayed (bus busy)
+Still getting cache Task 7
+Tick 32
+Bus 2: Task 6 still delayed (bus busy)
+finished Caching Task7 → queued with priority on bus 2
+Tick 33
+Bus 2: Started executing Task 6
+Tick 34
+Bus 2: Started executing Task 6
+Tick 35
+Bus 2: Started executing Task 6
+Tick 36
+Bus 2: Done executing Task 6
+Tick 37
+Bus 2: Decoding Task 7
+Bus 2: Decoding Task 7
+Started getting cache Task 10
+Tick 38
+Bus 2: Task 7 finished Decoding
+Bus 2: Started executing Task 7
+Still getting cache Task 10
+Tick 39
+Bus 2: Done executing Task 7
+Still getting cache Task 10
+Tick 40
+Still getting cache Task 10
+Tick 41
+Still getting cache Task 10
+Tick 42
+finished Caching Task10 → queued with priority on bus 2
+Tick 43
+Bus 2: Decoding Task 10
+Bus 2: Decoding Task 10
+Tick 44
+Bus 2: Task 10 finished Decoding
+Bus 2: Started executing Task 10
+Tick 45
+Bus 2: Done executing Task 10

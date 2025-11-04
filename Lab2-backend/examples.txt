@@ -1,0 +1,46 @@
+mainQueue = [
+    Task(1, 1, True,  True),
+    Task(2, 2, False, False),  
+    Task(3, 1, True,  True),
+    Task(4, 2, True,  False),
+    Task(5, 1, True,  True),
+    Task(6, 2, False,  True),
+    Task(7, 1, False, False),  
+    Task(8, 2, True,  False),
+    Task(9, 1, True,  True),
+    Task(10, 1, False,  False),
+    Task(11, 2, True,  True),
+    Task(12, 1, True,  False),
+] 44
+
+
+mainQueue = [
+    Task(1, 1, False,  True),
+    Task(2, 2, False, False),  
+    Task(3, 1, True,  True),
+    Task(4, 2, True,  False),
+    Task(5, 1, True,  True),
+    Task(6, 2, True,  True),
+    Task(7, 1, False, False),  
+    Task(8, 2, False,  False),
+    Task(9, 1, True,  True),
+    Task(10, 1, False,  False),
+    Task(11, 2, True,  True),
+    Task(12, 1, True,  False),
+] 48
+
+mainQueue = [
+    Task(1, 2, True,  True),
+    Task(2, 2, False, True),  
+    Task(3, 2, True,  True),
+    Task(4, 2, True,  True),
+    Task(5, 2, True,  True),
+] 27
+
+mainQueue = [
+    Task(1, 2, True,  False),
+    Task(2, 2, False, True),  
+    Task(3, 2, True,  True),
+    Task(4, 2, True,  True),
+    Task(5, 2, True,  True),
+] 23
