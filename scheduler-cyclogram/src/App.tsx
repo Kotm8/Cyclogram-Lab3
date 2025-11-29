@@ -11,22 +11,18 @@ type TaskView = {
   taskLength: number;
   isCache: boolean;
   useBus: boolean;
-  isDMA: boolean;
   busIndex?: number | null;
   decoded_at?: number | null;
 };
 
 type CacheView = { task: TaskView; time_left: number };
 
-type DMAView = { task: TaskView; time_left: number };
-
 type SentToCacheView = { bus: number; taskId: number };
 
 type Tick = {
   id: number;
   buses: TaskView[];
-  dma?: DMAView | null;
-  cache?: CacheView | null;
+  cache?: CacheView[] | null;
   sentToCache?: SentToCacheView[] | null;
 };
 
@@ -43,7 +39,6 @@ export type InputTask = {
   length: number;
   isCache: boolean;
   useBus: boolean;
-  isDMA: boolean;
 }
 
 export type RandomInputTask = {
@@ -51,6 +46,7 @@ export type RandomInputTask = {
   chance: number;
   possibilities: RandomInputPossibilities[]
 }
+
 type RandomInputPossibilities = {
   chance: number;
   length: number;
@@ -68,15 +64,14 @@ type Block = {
 
 export default function App() {
   const [data, setData] = useState<Cyclogram>({ ticks: [] });
-  const [taskTableData, setTaskTableData] = useState<InputTask[]>(defaultArray);
+  const [taskTableData, setTaskTableData] = useState<InputTask[][]>(defaultArray);
   const [RandomTableData, setRandomTableData] = useState<RandomInputTask[]>(defaultRandomArray);
   const CELL = 40;
 
-  const dividerRows = [3, 8, 11, 14];
-  const BUS_COUNT = 2;
-  const BUS_ROWS = [dividerRows[0], dividerRows[1]];
-  const DMA_ROW = dividerRows[2];
-  const CACHE_ROW = dividerRows[3];
+  const dividerRows = [3, 8, 13, 18, 23, 27];
+  const BUS_COUNT = 3;
+  const BUS_ROWS = [dividerRows[0], dividerRows[2], dividerRows[4]];
+  const CACHE_ROWS = [dividerRows[1], dividerRows[3], dividerRows[5]];
   const totalRows = Math.max(...dividerRows) + 1;
 
   const cols = data.ticks.length;
@@ -88,7 +83,6 @@ export default function App() {
   const [taskAmount, setTaskAmount] = useState(200);
   const [cacheChance1, setCacheChance1] = useState(75);
   const [cacheChance2, setCacheChance2] = useState(90);
-  const [dmaChance, setDmaChance] = useState(65);
   const [cacheChance1Ticks, setCacheChance1Ticks] = useState(0);
   const [cacheChance2Ticks, setCacheChance2Ticks] = useState(0);
 
@@ -103,13 +97,14 @@ export default function App() {
   const fetchData = () => {
     setData({ ticks: [] });
     const payload = {
-      Tasks: taskTableData.map((task) => ({
-        id: task.id,
-        taskLength: task.length,
-        isCache: task.isCache,
-        useBus: task.useBus,
-        isDMA: task.isDMA
-      })),
+      Tasks: taskTableData.map(group =>
+        group.map(task => ({
+          id: task.id,
+          taskLength: task.length,
+          isCache: task.isCache,
+          useBus: task.useBus,
+        }))
+      ),
       CPU_MHz: cpuMHz,
       SB_MHz: sbMHz,
       RamTiming: ramTiming[0] + ramTiming[1] + ramTiming[2] + ramTiming[3],
@@ -142,7 +137,6 @@ export default function App() {
       CPU_MHz: cpuMHz,
       SB_MHz: sbMHz,
       RamTiming: ramTiming[0] + ramTiming[1] + ramTiming[2] + ramTiming[3],
-      DMAChance: dmaChance,
     };
     console.log(payload)
 
@@ -364,133 +358,73 @@ export default function App() {
           }
 
         }
-      }
-      // @ts-ignore dma logic
-      if (tick.dma?.time_left && tick.dma.time_left > 0 || (data.ticks[c - 1]?.dma?.time_left && data.ticks[c - 1].dma.time_left > 0)) {
 
-        const span = 1;
-        if (tick.dma?.time_left === (4 * Math.ceil(cpuMHz / sbMHz) - 1)) {
-          out.push({
-            key: `DMA-${c}`,
-            row: DMA_ROW - 1,
-            colStart: c + 1,
-            colEnd: Math.min(cols + 1, c + 1 + span),
-            className: `rounded-l border-t-2 border-l-2 border-black`,
-            style: { backgroundImage: shadedLinesurl }
-          });
-        }
-        // @ts-ignore
-        else if (tick.dma?.time_left > 0) {
-          out.push({
-            key: `DMA-${c}`,
-            row: DMA_ROW - 1,
-            colStart: c + 1,
-            colEnd: Math.min(cols + 1, c + 1 + span),
-            className: `border-t-2 border-black`,
-            style: { backgroundImage: shadedLinesurl }
-          });
-        }
-        else {
-          out.push({
-            key: `DMA-${c}`,
-            row: DMA_ROW - 1,
-            colStart: c + 1,
-            colEnd: Math.min(cols + 1, c + 1 + span),
-            className: `rounded-r border-t-2 border-r-2 border-black`,
-            style: { backgroundImage: shadedLinesurl }
-          });
-        }
 
-        if (tick.dma?.time_left === (4 * Math.ceil(cpuMHz / sbMHz) - 2)) {
-          out.push({
-            key: `DMA-decoding-tick-${c}-task-${data.ticks[c]?.dma?.task.id}`,
-            row: -1,
-            colStart: -1,
-            colEnd: -1,
-            className: "text-black flex items-center justify-center font-bold z-50 pointer-events-none",
-            label: (
-              <span className="flex items-center space-x-1">
-                <span className="text-[14px]">{data.ticks[c]?.dma?.task.id}</span>
-              </span>
-            ),
-            style: {
-              position: "absolute",
-              top: `${(DMA_ROW - 1) * CELL + 10}px`,
-              left: `${(c + 1) * CELL + CELL / 2 - 10}px`,
-              backgroundColor: "white",
-              padding: "0px",
-              borderRadius: "4px",
-              width: "20px",
-              height: "20px",
-              lineHeight: "20px",
-              textAlign: "center",
-              fontSize: "16px",
-            },
-          });
-        }
-      }
-      // @ts-ignore
-      if (tick.cache?.time_left && tick.cache.time_left > 0 || (data.ticks[c - 1]?.cache?.time_left && data.ticks[c - 1].cache.time_left > 0)) {
+        const cacheEntry = tick.cache?.find(cv => cv.task.busIndex === b);
+        const prevCacheEntry = data.ticks[c - 1]?.cache?.find(cv => cv.task.busIndex === b);
 
-        const span = 1;
-        if (tick.cache?.time_left === (ramTimingCalculator() - 1)) {
-          out.push({
-            key: `cache-${c}`,
-            row: CACHE_ROW - 1,
-            colStart: c + 1,
-            colEnd: Math.min(cols + 1, c + 1 + span),
-            className: `rounded-l border-t-2 border-l-2 border-black`,
-            style: { backgroundImage: shadedLinesurl }
-          });
-        }
-        // @ts-ignore
-        else if (tick.cache?.time_left > 0) {
-          out.push({
-            key: `cache-${c}`,
-            row: CACHE_ROW - 1,
-            colStart: c + 1,
-            colEnd: Math.min(cols + 1, c + 1 + span),
-            className: `border-t-2 border-black`,
-            style: { backgroundImage: shadedLinesurl }
-          });
-        }
-        else {
-          out.push({
-            key: `cache-${c}`,
-            row: CACHE_ROW - 1,
-            colStart: c + 1,
-            colEnd: Math.min(cols + 1, c + 1 + span),
-            className: `rounded-r border-t-2 border-r-2 border-black`,
-            style: { backgroundImage: shadedLinesurl }
-          });
-        }
+        const timeLeft = cacheEntry?.time_left ?? 0;
+        const prevTimeLeft = prevCacheEntry?.time_left ?? 0;
 
-        if (tick.cache?.time_left === (ramTimingCalculator() - 2)) {
-          out.push({
-            key: `cache-decoding-tick-${c}-task-${data.ticks[c]?.cache?.task.id}`,
-            row: -1,
-            colStart: -1,
-            colEnd: -1,
-            className: "text-black flex items-center justify-center font-bold z-50 pointer-events-none",
-            label: (
-              <span className="flex items-center space-x-1">
-                <span className="text-[14px]">{data.ticks[c]?.cache?.task.id}</span>
-              </span>
-            ),
-            style: {
-              position: "absolute",
-              top: `${(CACHE_ROW - 1) * CELL + 10}px`,
-              left: `${(c + 1) * CELL + CELL / 2 - 10}px`,
-              backgroundColor: "white",
-              padding: "0px",
-              borderRadius: "4px",
-              width: "20px",
-              height: "20px",
-              lineHeight: "20px",
-              textAlign: "center",
-              fontSize: "16px",
-            },
-          });
+        if (timeLeft > 0 || prevTimeLeft > 0) {
+          const span = 1;
+
+          if (timeLeft === (ramTimingCalculator() - 1)) {
+            out.push({
+              key: `bus-${b}-tick-${c}-cache-${c}`,
+              row: CACHE_ROWS[b] - 1,
+              colStart: c + 1,
+              colEnd: Math.min(cols + 1, c + 1 + span),
+              className: `rounded-l border-t-2 border-l-2 border-black`,
+              style: { backgroundImage: shadedLinesurl }
+            });
+          } else if (timeLeft > 0) {
+            out.push({
+              key: `bus-${b}-tick-${c}-cache-${c}`,
+              row: CACHE_ROWS[b] - 1,
+              colStart: c + 1,
+              colEnd: Math.min(cols + 1, c + 1 + span),
+              className: `border-t-2 border-black`,
+              style: { backgroundImage: shadedLinesurl }
+            });
+          } else {
+            out.push({
+              key: `bus-${b}-tick-${c}-cache-${c}`,
+              row: CACHE_ROWS[b] - 1,
+              colStart: c + 1,
+              colEnd: Math.min(cols + 1, c + 1 + span),
+              className: `rounded-r border-t-2 border-r-2 border-black`,
+              style: { backgroundImage: shadedLinesurl }
+            });
+          }
+
+          if (timeLeft === (ramTimingCalculator() - 2) && cacheEntry) {
+            out.push({
+              key: `bus-${b}-tick-${c}-cache-decoding-tick-${c}-task-${cacheEntry.task.id}`,
+              row: -1,
+              colStart: -1,
+              colEnd: -1,
+              className: "text-black flex items-center justify-center font-bold z-50 pointer-events-none",
+              label: (
+                <span className="flex items-center space-x-1">
+                  <span className="text-[14px]">{cacheEntry.task.id}</span>
+                </span>
+              ),
+              style: {
+                position: "absolute",
+                top: `${(CACHE_ROWS[b] - 1) * CELL + 10}px`,
+                left: `${(c + 1) * CELL + CELL / 2 - 10}px`,
+                backgroundColor: "white",
+                padding: "0px",
+                borderRadius: "4px",
+                width: "20px",
+                height: "20px",
+                lineHeight: "20px",
+                textAlign: "center",
+                fontSize: "16px",
+              },
+            });
+          }
         }
       }
     }
@@ -549,7 +483,7 @@ export default function App() {
 
         </div>
 
-        <div className="overflow-auto border min-h-[550px] max-h-[900px] min-w-[800px] max-w-[800px]">
+        <div className="overflow-auto border min-h-[550px] max-h-[900px] min-w-[1000px] max-w-[1000px]">
           <div className="relative pl-12">
             <div
               className="relative"
@@ -608,7 +542,7 @@ export default function App() {
                 />
               ))}
               {dividerRows.map((dividerRow, idx) => {
-                const labels = ["k1 ", "k2 ", "DMA", "kk "];
+                const labels = ["k1 ", "kk1 ", "k2 ", "kk2 ", "k3 ", "kk3 ",];
                 return (
                   <div
                     key={`divider-label-${idx}`}
@@ -692,20 +626,27 @@ export default function App() {
                 <span >%</span>
               </div>
 
-              <span >DMA:  </span>
-              <input
-                type="number"
-                className="w-16 border rounded px-1 text-center"
-                value={dmaChance}
-                onChange={(e) => setDmaChance(Number(e.target.value))}
-              />
-              <span >%</span>
             </div>
           }
 
         </div>
         <div className="max-h-[550px] min-w-[700px] overflow-auto">
-          {useTable ? <TaskTable data={taskTableData} setData={setTaskTableData} /> : <RandomTaskGenerator data={RandomTableData} setData={setRandomTableData} />}
+          {useTable ? (
+            taskTableData.map((table, index) => (
+              <TaskTable
+                key={index}
+                data={table}
+                setData={(newTable) =>
+                  setTaskTableData((prev) => {
+                    const updated = [...prev];
+                    updated[index] = newTable;
+                    return updated;
+                  })
+                }
+              />
+            ))
+          ) : (<RandomTaskGenerator data={RandomTableData} setData={setRandomTableData} />
+          )}
         </div>
         {(!useTable && cacheChance1Ticks !== 0) ?
           <div className="ml-4">

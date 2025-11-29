@@ -1,34 +1,40 @@
 import type { InputTask } from "./App";
 
-export default function TaskTable({ data, setData }: { data: InputTask[], setData: React.Dispatch<React.SetStateAction<InputTask[]>> }) {
+export default function TaskTable({
+    data,
+    setData
+}: {
+    data: InputTask[];
+    setData: (updated: InputTask[]) => void;
+}) {
 
     const handleChange = (id: number, field: string, value: any) => {
-        setData((prev) =>
-            prev.map((task) =>
+        setData(
+            data.map((task) =>
                 task.id === id ? { ...task, [field]: value } : task
             )
         );
     };
 
     const addTask = () => {
-        setData((prev) => [
-            ...prev,
+        setData([
+            ...data,
             {
-                id: prev.length + 1,
+                id: data.length + 1,
                 length: 1,
                 isCache: false,
                 useBus: false,
-                isDMA: false,
             },
         ]);
-    }
+    };
+
     const deleteTask = (id: number) => {
-  setData((prev) =>
-    prev
-      .filter((task) => task.id !== id)          
-      .map((task, index) => ({ ...task, id: index + 1 })) 
-  );
-};
+        setData(
+            data
+                .filter((task) => task.id !== id)
+                .map((task, index) => ({ ...task, id: index + 1 }))
+        );
+    };
 
     return (
         <div className="p-4">
@@ -39,7 +45,6 @@ export default function TaskTable({ data, setData }: { data: InputTask[], setDat
                         <th className="px-4 py-2 border">Length</th>
                         <th className="px-4 py-2 border">Is Cache</th>
                         <th className="px-4 py-2 border">Use Bus</th>
-                        <th className="px-4 py-2 border">Is DMA</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,26 +62,18 @@ export default function TaskTable({ data, setData }: { data: InputTask[], setDat
                                 />
                             </td>
                             <td className="px-4 py-2 border text-center">
-                                <div className="flex justify-center gap-2">
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name={`isCache-${task.id}`}
-                                            checked={task.isCache === true}
-                                            onChange={() => handleChange(task.id, "isCache", true)}
-                                        />{" "}
-                                        Yes
-                                    </label>
-                                    <label>
-                                        <input
-                                            type="radio"
-                                            name={`isCache-${task.id}`}
-                                            checked={task.isCache === false}
-                                            onChange={() => handleChange(task.id, "isCache", false)}
-                                        />{" "}
-                                        No
-                                    </label>
-                                </div>
+                                <select
+                                    className="border rounded px-2 py-1"
+                                    value={task.isCache ? "yes" : "no"}
+                                    onChange={(e) =>
+                                        handleChange(task.id, "isCache", e.target.value === "yes")
+                                    }
+                                >
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                </select>
+
+
                             </td>
                             <td className="px-4 py-2 border text-center">
                                 <select
@@ -92,26 +89,13 @@ export default function TaskTable({ data, setData }: { data: InputTask[], setDat
 
                             </td>
                             <td className="px-4 py-2 border text-center">
-                                <select
-                                    className="border rounded px-2 py-1"
-                                    value={task.isDMA ? "yes" : "no"}
-                                    onChange={(e) =>
-                                        handleChange(task.id, "isDMA", e.target.value === "yes")
-                                    }
+                                <button
+                                    onClick={() => deleteTask(task.id)}
+                                    className="w-[30px] h-[30px] bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition"
                                 >
-                                    <option value="yes">Yes</option>
-                                    <option value="no">No</option>
-                                </select>
-
+                                    -
+                                </button>
                             </td>
-                            <button
-                                onClick={() => (
-                                    deleteTask(task.id))
-                                }
-                                className="w-[30px] h-[30px] ml-4 mt-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition"
-                            >
-                                -
-                            </button>
                         </tr>
                     ))}
 
