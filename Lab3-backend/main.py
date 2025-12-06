@@ -275,9 +275,11 @@ def checkIfPriorityBus(busIndex):
             continue
         other = buses[i][-1]
         other_time = getattr(other, "decoded_at", -1)
+        
+        if other.status in ("delayed"):
+            if other_time > my_time:
+                return False
 
-        if other_time > my_time and other.status in ("delayed"):
-            return False
 
     for i in range(BUS_COUNT):
         if i == busIndex:
@@ -286,14 +288,13 @@ def checkIfPriorityBus(busIndex):
             continue
         other = cacheQueue[i][-1]
         other_time = getattr(other, "cache_request_time", -1)
-
-        if other_time > my_time and not(buses[i][-1].status in ("executing", "done")):
+        if other_time > my_time :
             return False
 
     return True
 
 def checkIfPriorityQueue(busIndex):
-    my_task = cacheQueue[busIndex][0]
+    my_task = cacheQueue[busIndex][-1]
     my_time = getattr(my_task, "cache_request_time", -1)
     
     for i in range(BUS_COUNT):
@@ -315,7 +316,7 @@ def checkIfPriorityQueue(busIndex):
         if not cacheQueue[i]:
             continue
 
-        other = cacheQueue[i][0]
+        other = cacheQueue[i][-1]
         other_time = getattr(other, "cache_request_time", -1)
 
         if other_time > my_time and not(buses[i][-1].status in ("executing", "done")):
